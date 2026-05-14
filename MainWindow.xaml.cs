@@ -63,6 +63,7 @@ public partial class MainWindow : Window
         SetComposerDefaults();
         SetComposerExpanded(false, focusTitle: true);
         BackdropLayer.Opacity = DefaultBackdropOpacity;
+        Dispatcher.BeginInvoke(new Action(SetComposerDefaults));
     }
 
     private void LoadSeedData()
@@ -380,6 +381,22 @@ public partial class MainWindow : Window
     {
         DueDateBox.Text = DateTime.Today.ToString("yyyy-MM-dd");
         DueTimeBox.Text = DateTime.Now.AddHours(1).ToString("HH:mm");
+    }
+
+    private void DueDateBox_Loaded(object sender, RoutedEventArgs e)
+    {
+        if (sender is System.Windows.Controls.TextBox textBox && string.IsNullOrWhiteSpace(textBox.Text))
+        {
+            textBox.Text = DateTime.Today.ToString("yyyy-MM-dd");
+        }
+    }
+
+    private void DueTimeBox_Loaded(object sender, RoutedEventArgs e)
+    {
+        if (sender is System.Windows.Controls.TextBox textBox && string.IsNullOrWhiteSpace(textBox.Text))
+        {
+            textBox.Text = DateTime.Now.AddHours(1).ToString("HH:mm");
+        }
     }
 
     private static DateTime ParseDueDate(string? text)

@@ -161,7 +161,8 @@
 
                                             <CheckBox IsChecked="{Binding IsChecked, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
                                                       VerticalAlignment="Center"
-                                                      Margin="0,0,10,0" />
+                                                      Margin="0,0,10,0"
+                                                      IsTabStop="False" />
 
                                             <TextBox Grid.Column="1"
                                                      Text="{Binding Text, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
@@ -205,14 +206,16 @@
                                     <TextBlock Text="날짜" Foreground="#E2E8F0" Margin="0,0,0,6" />
                                     <TextBox x:Name="DueDateBox"
                                              Style="{StaticResource FieldTextBoxStyle}"
-                                             ToolTip="날짜(yyyy-MM-dd)" />
+                                             ToolTip="날짜(yyyy-MM-dd)"
+                                             Loaded="DueDateBox_Loaded" />
                                 </StackPanel>
 
                                 <StackPanel Grid.Column="2">
                                     <TextBlock Text="시간" Foreground="#E2E8F0" Margin="0,0,0,6" />
                                     <TextBox x:Name="DueTimeBox"
                                              Style="{StaticResource FieldTextBoxStyle}"
-                                             ToolTip="시간(HH:mm)" />
+                                             ToolTip="시간(HH:mm)"
+                                             Loaded="DueTimeBox_Loaded" />
                                 </StackPanel>
                             </Grid>
                         </StackPanel>
@@ -233,7 +236,9 @@
                          Foreground="White"
                          HorizontalContentAlignment="Stretch"
                          ScrollViewer.HorizontalScrollBarVisibility="Disabled"
-                         ScrollViewer.VerticalScrollBarVisibility="Hidden">
+                         ScrollViewer.VerticalScrollBarVisibility="Hidden"
+                         Focusable="False"
+                         IsTabStop="False">
                     <ListBox.ItemTemplate>
                         <DataTemplate>
                             <Border Margin="0,0,0,10"
@@ -277,7 +282,8 @@
                                                     <StackPanel Orientation="Horizontal" Margin="0,0,0,6">
                                                         <CheckBox IsChecked="{Binding IsChecked, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
                                                                   VerticalAlignment="Center"
-                                                                  Margin="0,0,8,0" />
+                                                                  Margin="0,0,8,0"
+                                                                  IsTabStop="False" />
                                                         <TextBlock Text="{Binding Text}"
                                                                    FontSize="11"
                                                                    Foreground="#E2E8F0"
