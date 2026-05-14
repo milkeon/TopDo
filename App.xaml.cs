@@ -25,11 +25,8 @@ public partial class App : System.Windows.Application
         _mainWindow.RegisterGlobalHotkey(HotkeyModifiers.Shift | HotkeyModifiers.Alt, HotkeyKeys.PageDown, 0x1205);
         _mainWindow.RegisterGlobalHotkey(HotkeyModifiers.Control | HotkeyModifiers.Alt, HotkeyKeys.Q, 0x1203);
 
-        _mainWindow.Show();
-        _mainWindow.Activate();
-        _mainWindow.Topmost = true;
-        _mainWindow.Topmost = false;
-        _mainWindow.Focus();
+        ShowMainWindow();
+        Dispatcher.BeginInvoke(new Action(ShowMainWindow));
 
         _trayIcon = new Forms.NotifyIcon
         {
@@ -58,9 +55,15 @@ public partial class App : System.Windows.Application
             _mainWindow.Show();
         }
 
-        if (_mainWindow.WindowState == WindowState.Minimized)
+        _mainWindow.WindowState = WindowState.Normal;
+
+        var workArea = SystemParameters.WorkArea;
+        var maxLeft = workArea.Right - Math.Min(_mainWindow.Width, workArea.Width);
+        var maxTop = workArea.Bottom - Math.Min(_mainWindow.Height, workArea.Height);
+        if (_mainWindow.Left < workArea.Left || _mainWindow.Left > maxLeft || _mainWindow.Top < workArea.Top || _mainWindow.Top > maxTop)
         {
-            _mainWindow.WindowState = WindowState.Normal;
+            _mainWindow.Left = workArea.Left + Math.Max(0, (workArea.Width - _mainWindow.Width) / 2);
+            _mainWindow.Top = workArea.Top + Math.Max(0, (workArea.Height - _mainWindow.Height) / 2);
         }
 
         _mainWindow.Activate();

@@ -120,6 +120,14 @@ public partial class MainWindow : Window
         Width = state.Width;
         Height = state.Height;
         WindowState = state.WindowState;
+        var workArea = SystemParameters.WorkArea;
+        var maxLeft = workArea.Right - Math.Min(Width, workArea.Width);
+        var maxTop = workArea.Bottom - Math.Min(Height, workArea.Height);
+        if (Left < workArea.Left || Left > maxLeft || Top < workArea.Top || Top > maxTop)
+        {
+            Left = workArea.Left + Math.Max(0, (workArea.Width - Width) / 2);
+            Top = workArea.Top + Math.Max(0, (workArea.Height - Height) / 2);
+        }
         _restoringWindowState = false;
     }
 
