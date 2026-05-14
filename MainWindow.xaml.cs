@@ -14,6 +14,11 @@ public partial class MainWindow : Window
 {
     private const int WmHotkey = 0x0312;
     private const int HotkeyId = 0x1200;
+    private const int OpacityUpHotkeyId = 0x1201;
+    private const int OpacityDownHotkeyId = 0x1202;
+    private const double OpacityStep = 0.1;
+    private const double MinWindowOpacity = 0.25;
+    private const double MaxWindowOpacity = 1.0;
     private HwndSource? _source;
     private readonly ObservableCollection<ToDoItem> _items = new();
     private readonly ObservableCollection<ChecklistDraftItem> _composerChecklistItems = new();
@@ -38,14 +43,14 @@ public partial class MainWindow : Window
         StateChanged += Window_StateChanged;
     }
 
-    public void RegisterGlobalHotkey(HotkeyModifiers modifiers, HotkeyKeys key)
+    public void RegisterGlobalHotkey(HotkeyModifiers modifiers, HotkeyKeys key, int? hotkeyId = null)
     {
         SourceInitialized += (_, _) =>
         {
             _source = (HwndSource)PresentationSource.FromVisual(this)!;
             _source.AddHook(WndProc);
             var helper = new WindowInteropHelper(this);
-            NativeMethods.RegisterHotKey(helper.Handle, HotkeyId, (uint)modifiers, (uint)key);
+            NativeMethods.RegisterHotKey(helper.Handle, hotkeyId ?? HotkeyId, (uint)modifiers, (uint)key);
         };
     }
 
@@ -54,6 +59,7 @@ public partial class MainWindow : Window
         LoadSeedData();
         RestoreWindowState();
         SetComposerExpanded(false, focusTitle: true);
+        Opacity = 1.0;
     }
 
     private void LoadSeedData()
@@ -429,12 +435,31 @@ public partial class MainWindow : Window
         Hide();
     }
 
+    private void AdjustWindowOpacity(double delta)
+    {
+        var nextOpacity = Math.Clamp(Opacity + delta, MinWindowOpacity, MaxWindowOpacity);
+        Opacity = nextOpacity;
+    }
+
     private IntPtr WndProc(IntPtr hwnd, int msg, IntPtr wParam, IntPtr lParam, ref bool handled)
     {
-        if (msg == WmHotkey && wParam.ToInt32() == HotkeyId)
+        if (msg == WmHotkey)
         {
-            RequestShow?.Invoke();
-            handled = true;
+            if (wParam.ToInt32() == HotkeyId)
+            {
+                RequestShow?.Invoke();
+                handled = true;
+            }
+            else if (wParam.ToInt32() == OpacityUpHotkeyId)
+            {
+                AdjustWindowOpacity(OpacityStep);
+                handled = true;
+            }
+            else if (wParam.ToInt32() == OpacityDownHotkeyId)
+            {
+                AdjustWindowOpacity(-OpacityStep);
+                handled = true;
+            }
         }
 
         return IntPtr.Zero;
