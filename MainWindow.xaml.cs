@@ -231,7 +231,7 @@ public partial class MainWindow : Window
 
     private void ChecklistTextBox_PreviewKeyDown(object sender, System.Windows.Input.KeyEventArgs e)
     {
-        if (sender is not TextBox textBox || textBox.DataContext is not ChecklistDraftItem item)
+        if (sender is not System.Windows.Controls.TextBox textBox || textBox.DataContext is not ChecklistDraftItem item)
         {
             return;
         }
@@ -314,7 +314,7 @@ public partial class MainWindow : Window
                 return;
             }
 
-            var textBox = FindVisualChild<TextBox>(container);
+            var textBox = FindVisualChild<System.Windows.Controls.TextBox>(container);
             if (textBox is null)
             {
                 return;
