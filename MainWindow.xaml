@@ -12,7 +12,7 @@
         MinHeight="760"
         WindowStartupLocation="CenterScreen"
         WindowStyle="None"
-        ResizeMode="CanResizeWithGrip"
+        ResizeMode="CanResize"
         AllowsTransparency="True"
         Background="Transparent"
         Closing="Window_Closing"
@@ -97,6 +97,11 @@
     </shell:WindowChrome.WindowChrome>
 
     <Grid Margin="10" Background="Transparent" ClipToBounds="True" PreviewMouseLeftButtonDown="WindowRoot_PreviewMouseLeftButtonDown">
+        <Border x:Name="BackdropLayer"
+                CornerRadius="28"
+                Background="#FF020617"
+                Opacity="0.30"
+                IsHitTestVisible="False" />
         <Border CornerRadius="28"
                 Background="#0CFFFFFF"
                 BorderBrush="#66FFFFFF"

@@ -14,6 +14,7 @@ public enum HotkeyKeys : uint
 {
     Up = 0x26,
     Down = 0x28,
+    Q = 0x51,
     T = 0x54,
     Space = 0x20
 }

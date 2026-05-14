@@ -16,9 +16,11 @@ public partial class MainWindow : Window
     private const int HotkeyId = 0x1200;
     private const int OpacityUpHotkeyId = 0x1201;
     private const int OpacityDownHotkeyId = 0x1202;
-    private const double OpacityStep = 0.1;
-    private const double MinWindowOpacity = 0.25;
-    private const double MaxWindowOpacity = 1.0;
+    internal const int ExitHotkeyId = 0x1203;
+    private const double BackdropStep = 0.1;
+    private const double DefaultBackdropOpacity = 0.30;
+    private const double MinBackdropOpacity = 0.12;
+    private const double MaxBackdropOpacity = 0.80;
     private HwndSource? _source;
     private readonly ObservableCollection<ToDoItem> _items = new();
     private readonly ObservableCollection<ChecklistDraftItem> _composerChecklistItems = new();
@@ -59,7 +61,7 @@ public partial class MainWindow : Window
         LoadSeedData();
         RestoreWindowState();
         SetComposerExpanded(false, focusTitle: true);
-        Opacity = 1.0;
+        BackdropLayer.Opacity = DefaultBackdropOpacity;
     }
 
     private void LoadSeedData()
@@ -329,11 +331,7 @@ public partial class MainWindow : Window
             return;
         }
 
-        if (source is System.Windows.Controls.TextBox
-            || source is System.Windows.Controls.Button
-            || source is System.Windows.Controls.CheckBox
-            || source is DatePicker
-            || source is System.Windows.Controls.ComboBox)
+        if (IsInteractiveSource(source) || IsWithinResizeBorder(e.GetPosition(this)))
         {
             return;
         }
@@ -435,10 +433,38 @@ public partial class MainWindow : Window
         Hide();
     }
 
-    private void AdjustWindowOpacity(double delta)
+    private static bool IsInteractiveSource(DependencyObject source)
     {
-        var nextOpacity = Math.Clamp(Opacity + delta, MinWindowOpacity, MaxWindowOpacity);
-        Opacity = nextOpacity;
+        for (var current = source; current is not null; current = VisualTreeHelper.GetParent(current))
+        {
+            if (current is System.Windows.Controls.TextBox
+                || current is System.Windows.Controls.Button
+                || current is System.Windows.Controls.CheckBox
+                || current is DatePicker
+                || current is System.Windows.Controls.ComboBox
+                || current is System.Windows.Controls.Primitives.RangeBase
+                || current is System.Windows.Controls.Primitives.ButtonBase)
+            {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    private bool IsWithinResizeBorder(System.Windows.Point position)
+    {
+        const double resizeMargin = 14;
+        return position.X <= resizeMargin
+               || position.Y <= resizeMargin
+               || position.X >= ActualWidth - resizeMargin
+               || position.Y >= ActualHeight - resizeMargin;
+    }
+
+    private void AdjustBackdropOpacity(double delta)
+    {
+        var nextOpacity = Math.Clamp(BackdropLayer.Opacity + delta, MinBackdropOpacity, MaxBackdropOpacity);
+        BackdropLayer.Opacity = nextOpacity;
     }
 
     private IntPtr WndProc(IntPtr hwnd, int msg, IntPtr wParam, IntPtr lParam, ref bool handled)
@@ -452,12 +478,17 @@ public partial class MainWindow : Window
             }
             else if (wParam.ToInt32() == OpacityUpHotkeyId)
             {
-                AdjustWindowOpacity(OpacityStep);
+                AdjustBackdropOpacity(BackdropStep);
                 handled = true;
             }
             else if (wParam.ToInt32() == OpacityDownHotkeyId)
             {
-                AdjustWindowOpacity(-OpacityStep);
+                AdjustBackdropOpacity(-BackdropStep);
+                handled = true;
+            }
+            else if (wParam.ToInt32() == ExitHotkeyId)
+            {
+                RequestExit?.Invoke();
                 handled = true;
             }
         }
