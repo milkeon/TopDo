@@ -18,11 +18,11 @@ public partial class App : System.Windows.Application
 
         _mainWindow.RequestShow += ShowMainWindow;
         _mainWindow.RequestExit += ExitApplication;
-        _mainWindow.RegisterGlobalHotkey(HotkeyModifiers.Control | HotkeyModifiers.Alt, HotkeyKeys.Space, 0x1200);
-        _mainWindow.RegisterGlobalHotkey(HotkeyModifiers.Control | HotkeyModifiers.Alt, HotkeyKeys.Up, 0x1201);
-        _mainWindow.RegisterGlobalHotkey(HotkeyModifiers.Control | HotkeyModifiers.Alt, HotkeyKeys.Down, 0x1202);
-        _mainWindow.RegisterGlobalHotkey(HotkeyModifiers.Control | HotkeyModifiers.Alt, HotkeyKeys.PageUp, 0x1204);
-        _mainWindow.RegisterGlobalHotkey(HotkeyModifiers.Control | HotkeyModifiers.Alt, HotkeyKeys.PageDown, 0x1205);
+        _mainWindow.RegisterGlobalHotkey(HotkeyModifiers.Shift | HotkeyModifiers.Alt, HotkeyKeys.Enter, 0x1200);
+        _mainWindow.RegisterGlobalHotkey(HotkeyModifiers.Shift | HotkeyModifiers.Alt, HotkeyKeys.Up, 0x1201);
+        _mainWindow.RegisterGlobalHotkey(HotkeyModifiers.Shift | HotkeyModifiers.Alt, HotkeyKeys.Down, 0x1202);
+        _mainWindow.RegisterGlobalHotkey(HotkeyModifiers.Shift | HotkeyModifiers.Alt, HotkeyKeys.PageUp, 0x1204);
+        _mainWindow.RegisterGlobalHotkey(HotkeyModifiers.Shift | HotkeyModifiers.Alt, HotkeyKeys.PageDown, 0x1205);
         _mainWindow.RegisterGlobalHotkey(HotkeyModifiers.Control | HotkeyModifiers.Alt, HotkeyKeys.Q, 0x1203);
 
         _mainWindow.Show();

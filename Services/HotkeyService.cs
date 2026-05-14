@@ -12,6 +12,7 @@ public enum HotkeyModifiers : uint
 
 public enum HotkeyKeys : uint
 {
+    Enter = 0x0D,
     Up = 0x26,
     Down = 0x28,
     PageUp = 0x21,
