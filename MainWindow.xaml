@@ -147,7 +147,7 @@
                                  ToolTip="할 일(타이틀)" />
 
                         <StackPanel x:Name="ComposerDetailsPanel" Visibility="Collapsed" Margin="0,12,0,0">
-                            <TextBlock Text="할 일 목록" Foreground="#E2E8F0" Margin="0,0,0,6" />
+                            <TextBlock Text="내용" Foreground="#E2E8F0" Margin="0,0,0,6" />
                             <ItemsControl x:Name="ChecklistItemsControl"
                                           ItemsSource="{Binding ComposerChecklistItems}">
                                 <ItemsControl.ItemTemplate>
@@ -181,6 +181,7 @@
                                                     BorderBrush="#52FFFFFF"
                                                     BorderThickness="1"
                                                     Foreground="White"
+                                                    IsTabStop="False"
                                                     Click="RemoveChecklistItem_Click"
                                                     Tag="{Binding}" />
                                         </Grid>
@@ -202,12 +203,9 @@
 
                                 <StackPanel Grid.Column="0">
                                     <TextBlock Text="날짜" Foreground="#E2E8F0" Margin="0,0,0,6" />
-                                    <DatePicker x:Name="DueDatePicker"
-                                                Height="40"
-                                                Background="#14FFFFFF"
-                                                BorderBrush="#38FFFFFF"
-                                                BorderThickness="1"
-                                                Foreground="White" />
+                                    <TextBox x:Name="DueDateBox"
+                                             Style="{StaticResource FieldTextBoxStyle}"
+                                             ToolTip="날짜(yyyy-MM-dd)" />
                                 </StackPanel>
 
                                 <StackPanel Grid.Column="2">
@@ -223,6 +221,7 @@
                                 Margin="0,14,0,0"
                                 Content="추가"
                                 Style="{StaticResource GlassActionButtonStyle}"
+                                IsTabStop="False"
                                 Click="ComposerActionButton_Click" />
                     </StackPanel>
                 </Border>
@@ -261,13 +260,10 @@
                                                    FontWeight="SemiBold"
                                                    Foreground="White"
                                                    TextWrapping="Wrap" />
-                                        <TextBlock Text="{Binding Content}"
-                                                   FontSize="11"
-                                                   Foreground="#E2E8F0"
-                                                   TextWrapping="Wrap"
-                                                   Margin="0,6,0,0">
-                                            <TextBlock.Style>
-                                                <Style TargetType="TextBlock">
+                                        <ItemsControl Margin="0,6,0,0"
+                                                      ItemsSource="{Binding Checklist}">
+                                            <ItemsControl.Style>
+                                                <Style TargetType="ItemsControl">
                                                     <Setter Property="Visibility" Value="Collapsed" />
                                                     <Style.Triggers>
                                                         <DataTrigger Binding="{Binding RelativeSource={RelativeSource AncestorType=ListBoxItem}, Path=IsMouseOver}" Value="True">
@@ -275,8 +271,22 @@
                                                         </DataTrigger>
                                                     </Style.Triggers>
                                                 </Style>
-                                            </TextBlock.Style>
-                                        </TextBlock>
+                                            </ItemsControl.Style>
+                                            <ItemsControl.ItemTemplate>
+                                                <DataTemplate>
+                                                    <StackPanel Orientation="Horizontal" Margin="0,0,0,6">
+                                                        <CheckBox IsChecked="{Binding IsChecked, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                                                                  VerticalAlignment="Center"
+                                                                  Margin="0,0,8,0" />
+                                                        <TextBlock Text="{Binding Text}"
+                                                                   FontSize="11"
+                                                                   Foreground="#E2E8F0"
+                                                                   TextWrapping="Wrap"
+                                                                   VerticalAlignment="Center" />
+                                                    </StackPanel>
+                                                </DataTemplate>
+                                            </ItemsControl.ItemTemplate>
+                                        </ItemsControl>
                                         <TextBlock Text="{Binding DueAt, StringFormat=마감: {0:yyyy-MM-dd HH:mm}}"
                                                    Foreground="#C7D2FE"
                                                    FontSize="11"
@@ -292,6 +302,7 @@
                                             Width="72"
                                             Height="32"
                                             Padding="0"
+                                            IsTabStop="False"
                                             Click="DeleteButton_Click"
                                             Tag="{Binding}" />
                                 </Grid>

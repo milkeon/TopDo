@@ -17,7 +17,7 @@ public partial class MainWindow : Window
     private const int OpacityUpHotkeyId = 0x1201;
     private const int OpacityDownHotkeyId = 0x1202;
     internal const int ExitHotkeyId = 0x1203;
-    private const double BackdropStep = 0.1;
+    private const double BackdropStep = 0.18;
     private const double DefaultBackdropOpacity = 0.56;
     private const double MinBackdropOpacity = 0.30;
     private const double MaxBackdropOpacity = 0.90;
@@ -220,7 +220,7 @@ public partial class MainWindow : Window
             .ToList();
         var content = BuildChecklistContent(checklist);
 
-        var dueDate = DueDatePicker.SelectedDate ?? DateTime.Today;
+        var dueDate = ParseDueDate(DueDateBox.Text);
         var dueTimeText = string.IsNullOrWhiteSpace(DueTimeBox.Text) ? DateTime.Now.AddHours(1).ToString("HH:mm") : DueTimeBox.Text.Trim();
         if (!TimeSpan.TryParse(dueTimeText, out var time))
         {
@@ -378,8 +378,29 @@ public partial class MainWindow : Window
 
     private void SetComposerDefaults()
     {
-        DueDatePicker.SelectedDate = DateTime.Today;
+        DueDateBox.Text = DateTime.Today.ToString("yyyy-MM-dd");
         DueTimeBox.Text = DateTime.Now.AddHours(1).ToString("HH:mm");
+    }
+
+    private static DateTime ParseDueDate(string? text)
+    {
+        if (string.IsNullOrWhiteSpace(text))
+        {
+            return DateTime.Today;
+        }
+
+        var trimmed = text.Trim();
+        if (DateTime.TryParseExact(trimmed, "yyyy-MM-dd", null, System.Globalization.DateTimeStyles.None, out var exact))
+        {
+            return exact.Date;
+        }
+
+        if (DateTime.TryParse(trimmed, out var parsed))
+        {
+            return parsed.Date;
+        }
+
+        return DateTime.Today;
     }
 
     private void FocusChecklistItem(int index)
