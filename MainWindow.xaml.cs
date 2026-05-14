@@ -18,9 +18,9 @@ public partial class MainWindow : Window
     private const int OpacityDownHotkeyId = 0x1202;
     internal const int ExitHotkeyId = 0x1203;
     private const double BackdropStep = 0.1;
-    private const double DefaultBackdropOpacity = 0.30;
-    private const double MinBackdropOpacity = 0.12;
-    private const double MaxBackdropOpacity = 0.80;
+    private const double DefaultBackdropOpacity = 0.56;
+    private const double MinBackdropOpacity = 0.30;
+    private const double MaxBackdropOpacity = 0.90;
     private HwndSource? _source;
     private readonly ObservableCollection<ToDoItem> _items = new();
     private readonly ObservableCollection<ChecklistDraftItem> _composerChecklistItems = new();
@@ -60,6 +60,7 @@ public partial class MainWindow : Window
     {
         LoadSeedData();
         RestoreWindowState();
+        SetComposerDefaults();
         SetComposerExpanded(false, focusTitle: true);
         BackdropLayer.Opacity = DefaultBackdropOpacity;
     }
@@ -162,7 +163,7 @@ public partial class MainWindow : Window
             EnsureComposerDraftRow();
             if (focusDetail)
             {
-                FocusContentBox();
+                FocusChecklistItem(_composerChecklistItems.Count - 1);
             }
             return;
         }
@@ -213,17 +214,17 @@ public partial class MainWindow : Window
             return;
         }
 
-        var content = ContentBox.Text.Trim();
         var checklist = _composerChecklistItems
             .Where(item => !string.IsNullOrWhiteSpace(item.Text))
             .Select(item => new ChecklistItem(item.Text.Trim(), item.IsChecked))
             .ToList();
+        var content = BuildChecklistContent(checklist);
 
         var dueDate = DueDatePicker.SelectedDate ?? DateTime.Today;
-        var dueTimeText = string.IsNullOrWhiteSpace(DueTimeBox.Text) ? "09:00" : DueTimeBox.Text.Trim();
+        var dueTimeText = string.IsNullOrWhiteSpace(DueTimeBox.Text) ? DateTime.Now.AddHours(1).ToString("HH:mm") : DueTimeBox.Text.Trim();
         if (!TimeSpan.TryParse(dueTimeText, out var time))
         {
-            time = new TimeSpan(9, 0, 0);
+            time = DateTime.Now.AddHours(1).TimeOfDay;
         }
 
         var dueAt = dueDate.Date.Add(time);
@@ -236,9 +237,7 @@ public partial class MainWindow : Window
     private void ResetComposer()
     {
         TitleBox.Clear();
-        ContentBox.Clear();
-        DueDatePicker.SelectedDate = null;
-        DueTimeBox.Text = "09:00";
+        SetComposerDefaults();
         _composerChecklistItems.Clear();
         _composerChecklistItems.Add(new ChecklistDraftItem());
     }
@@ -296,7 +295,11 @@ public partial class MainWindow : Window
             }
 
             _composerChecklistItems.Insert(index + 1, new ChecklistDraftItem());
-            FocusChecklistItem(index + 1);
+            Dispatcher.BeginInvoke(new Action(() =>
+            {
+                ChecklistItemsControl.UpdateLayout();
+                FocusChecklistItem(index + 1);
+            }));
         }
     }
 
@@ -373,19 +376,17 @@ public partial class MainWindow : Window
         Close();
     }
 
-    private void FocusContentBox()
+    private void SetComposerDefaults()
     {
-        Dispatcher.BeginInvoke(new Action(() =>
-        {
-            ContentBox.Focus();
-            ContentBox.CaretIndex = ContentBox.Text.Length;
-        }));
+        DueDatePicker.SelectedDate = DateTime.Today;
+        DueTimeBox.Text = DateTime.Now.AddHours(1).ToString("HH:mm");
     }
 
     private void FocusChecklistItem(int index)
     {
         Dispatcher.BeginInvoke(new Action(() =>
         {
+            ChecklistItemsControl.UpdateLayout();
             if (ChecklistItemsControl.ItemContainerGenerator.ContainerFromIndex(index) is not DependencyObject container)
             {
                 return;
@@ -400,6 +401,16 @@ public partial class MainWindow : Window
             textBox.Focus();
             textBox.CaretIndex = textBox.Text.Length;
         }));
+    }
+
+    private static string BuildChecklistContent(IEnumerable<ChecklistItem> checklist)
+    {
+        var lines = checklist
+            .Where(item => !string.IsNullOrWhiteSpace(item.Text))
+            .Select(item => $"{(item.IsChecked ? "☑" : "☐")} {item.Text.Trim()}")
+            .ToList();
+
+        return string.Join(Environment.NewLine, lines);
     }
 
     private static T? FindVisualChild<T>(DependencyObject root) where T : DependencyObject

@@ -113,7 +113,9 @@ public sealed class ToDoItem : INotifyPropertyChanged
             return;
         }
 
-        Content = string.Join(Environment.NewLine, _checklist.Select(item => $"{(item.IsChecked ? "☑" : "☐")} {item.Text}".TrimEnd()));
+        Content = string.Join(Environment.NewLine, _checklist
+            .Where(item => !string.IsNullOrWhiteSpace(item.Text))
+            .Select(item => $"{(item.IsChecked ? "☑" : "☐")} {item.Text.Trim()}"));
         SetIsDone(_checklist.All(item => item.IsChecked), syncChildren: false);
     }
 
@@ -129,7 +131,9 @@ public sealed class ToDoItem : INotifyPropertyChanged
                     item.IsChecked = value;
                 }
                 _syncingChecklistState = false;
-                Content = string.Join(Environment.NewLine, _checklist.Select(item => $"{(item.IsChecked ? "☑" : "☐")} {item.Text}".TrimEnd()));
+                Content = string.Join(Environment.NewLine, _checklist
+                    .Where(item => !string.IsNullOrWhiteSpace(item.Text))
+                    .Select(item => $"{(item.IsChecked ? "☑" : "☐")} {item.Text.Trim()}"));
             }
 
             return;
@@ -146,7 +150,9 @@ public sealed class ToDoItem : INotifyPropertyChanged
                 item.IsChecked = value;
             }
             _syncingChecklistState = false;
-            Content = string.Join(Environment.NewLine, _checklist.Select(item => $"{(item.IsChecked ? "☑" : "☐")} {item.Text}".TrimEnd()));
+            Content = string.Join(Environment.NewLine, _checklist
+                .Where(item => !string.IsNullOrWhiteSpace(item.Text))
+                .Select(item => $"{(item.IsChecked ? "☑" : "☐")} {item.Text.Trim()}"));
         }
     }
 

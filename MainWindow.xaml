@@ -100,10 +100,10 @@
         <Border x:Name="BackdropLayer"
                 CornerRadius="28"
                 Background="#FF020617"
-                Opacity="0.30"
+                Opacity="0.56"
                 IsHitTestVisible="False" />
         <Border CornerRadius="28"
-                Background="#0CFFFFFF"
+                Background="#09111A"
                 BorderBrush="#66FFFFFF"
                 BorderThickness="1.2"
                 Padding="20"
@@ -147,13 +147,7 @@
                                  ToolTip="할 일(타이틀)" />
 
                         <StackPanel x:Name="ComposerDetailsPanel" Visibility="Collapsed" Margin="0,12,0,0">
-                            <TextBlock Text="내용" Foreground="#E2E8F0" Margin="0,0,0,6" />
-                            <TextBox x:Name="ContentBox"
-                                     Style="{StaticResource MultilineFieldTextBoxStyle}"
-                                     Height="92"
-                                     ToolTip="내용" />
-
-                            <TextBlock Text="할 일 목록" Foreground="#E2E8F0" Margin="0,12,0,6" />
+                            <TextBlock Text="할 일 목록" Foreground="#E2E8F0" Margin="0,0,0,6" />
                             <ItemsControl x:Name="ChecklistItemsControl"
                                           ItemsSource="{Binding ComposerChecklistItems}">
                                 <ItemsControl.ItemTemplate>
@@ -220,7 +214,6 @@
                                     <TextBlock Text="시간" Foreground="#E2E8F0" Margin="0,0,0,6" />
                                     <TextBox x:Name="DueTimeBox"
                                              Style="{StaticResource FieldTextBoxStyle}"
-                                             Text="09:00"
                                              ToolTip="시간(HH:mm)" />
                                 </StackPanel>
                             </Grid>
@@ -240,7 +233,8 @@
                          Background="Transparent"
                          Foreground="White"
                          HorizontalContentAlignment="Stretch"
-                         ScrollViewer.HorizontalScrollBarVisibility="Disabled">
+                         ScrollViewer.HorizontalScrollBarVisibility="Disabled"
+                         ScrollViewer.VerticalScrollBarVisibility="Hidden">
                     <ListBox.ItemTemplate>
                         <DataTemplate>
                             <Border Margin="0,0,0,10"
