@@ -131,18 +131,9 @@ public partial class MainWindow : Window
 
     private void SetComposerExpanded(bool expanded, bool focusTitle = false)
     {
-        _composerExpanded = expanded;
-        ComposerDetailsPanel.Visibility = expanded ? Visibility.Visible : Visibility.Collapsed;
-        ComposerActionButton.Content = expanded ? "완료" : "추가";
+        ToggleComposerDetails(expanded, focusDetail: false);
 
-        if (expanded)
-        {
-            EnsureComposerDraftRow();
-            FocusChecklistItem(0);
-            return;
-        }
-
-        if (focusTitle)
+        if (!expanded && focusTitle)
         {
             Dispatcher.BeginInvoke(new Action(() =>
             {
@@ -152,11 +143,53 @@ public partial class MainWindow : Window
         }
     }
 
-    private void ExpandComposerForChecklist()
+    private void ToggleComposerDetails(bool expanded, bool focusDetail = false)
+    {
+        _composerExpanded = expanded;
+        ComposerDetailsPanel.Visibility = expanded ? Visibility.Visible : Visibility.Collapsed;
+        ComposerActionButton.Content = expanded ? "완료" : "추가";
+
+        if (expanded)
+        {
+            EnsureComposerDraftRow();
+            if (focusDetail)
+            {
+                FocusContentBox();
+            }
+            return;
+        }
+
+        if (focusDetail)
+        {
+            Dispatcher.BeginInvoke(new Action(() =>
+            {
+                TitleBox.Focus();
+                TitleBox.CaretIndex = TitleBox.Text.Length;
+            }));
+        }
+    }
+
+    private void TitleBox_GotKeyboardFocus(object sender, KeyboardFocusChangedEventArgs e)
     {
         if (!_composerExpanded)
         {
             SetComposerExpanded(true);
+        }
+    }
+
+    private void TitleBox_PreviewMouseLeftButtonDown(object sender, MouseButtonEventArgs e)
+    {
+        if (!_composerExpanded)
+        {
+            SetComposerExpanded(true);
+        }
+    }
+
+    private void ExpandComposerForChecklist()
+    {
+        if (!_composerExpanded)
+        {
+            ToggleComposerDetails(true, focusDetail: true);
             return;
         }
 
@@ -172,6 +205,7 @@ public partial class MainWindow : Window
             return;
         }
 
+        var content = ContentBox.Text.Trim();
         var checklist = _composerChecklistItems
             .Where(item => !string.IsNullOrWhiteSpace(item.Text))
             .Select(item => new ChecklistItem(item.Text.Trim(), item.IsChecked))
@@ -185,7 +219,7 @@ public partial class MainWindow : Window
         }
 
         var dueAt = dueDate.Date.Add(time);
-        _items.Insert(0, new ToDoItem(title, string.Empty, DateTime.Now, dueAt, checklist));
+        _items.Insert(0, new ToDoItem(title, content, DateTime.Now, dueAt, checklist));
 
         ResetComposer();
         SetComposerExpanded(false, focusTitle: true);
@@ -194,6 +228,7 @@ public partial class MainWindow : Window
     private void ResetComposer()
     {
         TitleBox.Clear();
+        ContentBox.Clear();
         DueDatePicker.SelectedDate = null;
         DueTimeBox.Text = "09:00";
         _composerChecklistItems.Clear();
@@ -208,7 +243,7 @@ public partial class MainWindow : Window
             return;
         }
 
-        SetComposerExpanded(true);
+        ToggleComposerDetails(true, focusDetail: true);
     }
 
     private void RemoveChecklistItem_Click(object sender, RoutedEventArgs e)
@@ -281,6 +316,35 @@ public partial class MainWindow : Window
         }
     }
 
+    private void WindowRoot_PreviewMouseLeftButtonDown(object sender, MouseButtonEventArgs e)
+    {
+        if (e.OriginalSource is not DependencyObject source)
+        {
+            return;
+        }
+
+        if (source is System.Windows.Controls.TextBox
+            || source is System.Windows.Controls.Button
+            || source is System.Windows.Controls.CheckBox
+            || source is DatePicker
+            || source is System.Windows.Controls.ComboBox)
+        {
+            return;
+        }
+
+        if (e.ButtonState == MouseButtonState.Pressed)
+        {
+            try
+            {
+                DragMove();
+            }
+            catch
+            {
+                // ignore when drag is not possible
+            }
+        }
+    }
+
     private void TitleBar_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
     {
         if (e.ClickCount == 2)
@@ -303,6 +367,15 @@ public partial class MainWindow : Window
     private void CloseButton_Click(object sender, RoutedEventArgs e)
     {
         Close();
+    }
+
+    private void FocusContentBox()
+    {
+        Dispatcher.BeginInvoke(new Action(() =>
+        {
+            ContentBox.Focus();
+            ContentBox.CaretIndex = ContentBox.Text.Length;
+        }));
     }
 
     private void FocusChecklistItem(int index)

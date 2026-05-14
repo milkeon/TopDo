@@ -6,13 +6,13 @@
         xmlns:shell="clr-namespace:System.Windows.Shell;assembly=PresentationFramework"
         mc:Ignorable="d"
         Title="Top Do"
-        Width="520"
-        Height="720"
-        MinWidth="460"
-        MinHeight="620"
+        Width="760"
+        Height="920"
+        MinWidth="620"
+        MinHeight="760"
         WindowStartupLocation="CenterScreen"
         WindowStyle="None"
-        ResizeMode="CanResize"
+        ResizeMode="CanResizeWithGrip"
         AllowsTransparency="True"
         Background="Transparent"
         Closing="Window_Closing"
@@ -96,68 +96,9 @@
                             UseAeroCaptionButtons="False" />
     </shell:WindowChrome.WindowChrome>
 
-    <Grid Margin="10" ClipToBounds="True">
-        <Grid.Background>
-            <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
-                <GradientStop Color="#07111F" Offset="0" />
-                <GradientStop Color="#0D1535" Offset="0.45" />
-                <GradientStop Color="#140E25" Offset="1" />
-            </LinearGradientBrush>
-        </Grid.Background>
-
-        <Canvas IsHitTestVisible="False">
-            <Ellipse Width="250" Height="250" Canvas.Left="-40" Canvas.Top="-30" Opacity="0.78">
-                <Ellipse.Fill>
-                    <RadialGradientBrush>
-                        <GradientStop Color="#FFF97316" Offset="0" />
-                        <GradientStop Color="#AAFB7185" Offset="0.5" />
-                        <GradientStop Color="#00FB7185" Offset="1" />
-                    </RadialGradientBrush>
-                </Ellipse.Fill>
-                <Ellipse.Effect>
-                    <BlurEffect Radius="40" />
-                </Ellipse.Effect>
-            </Ellipse>
-            <Ellipse Width="310" Height="310" Canvas.Left="250" Canvas.Top="-40" Opacity="0.84">
-                <Ellipse.Fill>
-                    <RadialGradientBrush>
-                        <GradientStop Color="#FF34D399" Offset="0" />
-                        <GradientStop Color="#AA22D3EE" Offset="0.58" />
-                        <GradientStop Color="#0022D3EE" Offset="1" />
-                    </RadialGradientBrush>
-                </Ellipse.Fill>
-                <Ellipse.Effect>
-                    <BlurEffect Radius="55" />
-                </Ellipse.Effect>
-            </Ellipse>
-            <Ellipse Width="220" Height="220" Canvas.Left="360" Canvas.Top="400" Opacity="0.8">
-                <Ellipse.Fill>
-                    <RadialGradientBrush>
-                        <GradientStop Color="#FF60A5FA" Offset="0" />
-                        <GradientStop Color="#AAA855F7" Offset="0.55" />
-                        <GradientStop Color="#00A855F7" Offset="1" />
-                    </RadialGradientBrush>
-                </Ellipse.Fill>
-                <Ellipse.Effect>
-                    <BlurEffect Radius="48" />
-                </Ellipse.Effect>
-            </Ellipse>
-            <Ellipse Width="170" Height="170" Canvas.Left="40" Canvas.Top="430" Opacity="0.74">
-                <Ellipse.Fill>
-                    <RadialGradientBrush>
-                        <GradientStop Color="#FF22D3EE" Offset="0" />
-                        <GradientStop Color="#AA6366F1" Offset="0.58" />
-                        <GradientStop Color="#006366F1" Offset="1" />
-                    </RadialGradientBrush>
-                </Ellipse.Fill>
-                <Ellipse.Effect>
-                    <BlurEffect Radius="36" />
-                </Ellipse.Effect>
-            </Ellipse>
-        </Canvas>
-
+    <Grid Margin="10" Background="Transparent" ClipToBounds="True" PreviewMouseLeftButtonDown="WindowRoot_PreviewMouseLeftButtonDown">
         <Border CornerRadius="28"
-                Background="#1AFFFFFF"
+                Background="#0CFFFFFF"
                 BorderBrush="#66FFFFFF"
                 BorderThickness="1.2"
                 Padding="20"
@@ -173,19 +114,19 @@
                     <RowDefinition Height="*" />
                 </Grid.RowDefinitions>
 
-                <Grid Height="34" MouseLeftButtonDown="TitleBar_MouseLeftButtonDown">
+                <Grid Height="44" MouseLeftButtonDown="TitleBar_MouseLeftButtonDown">
                     <TextBlock Text="Top Do"
                                VerticalAlignment="Center"
-                               FontSize="28"
+                               FontSize="30"
                                FontWeight="SemiBold"
                                Foreground="{StaticResource TextBrush}" />
                 </Grid>
 
                 <Border Grid.Row="1"
-                        Margin="0,18,0,16"
-                        Padding="16"
+                        Margin="0,16,0,16"
+                        Padding="18"
                         CornerRadius="22"
-                        Background="#14FFFFFF"
+                        Background="#0FFFFFFF"
                         BorderBrush="#48FFFFFF"
                         BorderThickness="1">
                     <Border.Effect>
@@ -196,15 +137,23 @@
                         <TextBox x:Name="TitleBox"
                                  Style="{StaticResource FieldTextBoxStyle}"
                                  KeyDown="TitleBox_KeyDown"
+                                 GotKeyboardFocus="TitleBox_GotKeyboardFocus"
+                                 PreviewMouseLeftButtonDown="TitleBox_PreviewMouseLeftButtonDown"
                                  ToolTip="할 일(타이틀)" />
 
                         <StackPanel x:Name="ComposerDetailsPanel" Visibility="Collapsed" Margin="0,12,0,0">
                             <TextBlock Text="내용" Foreground="#E2E8F0" Margin="0,0,0,6" />
+                            <TextBox x:Name="ContentBox"
+                                     Style="{StaticResource MultilineFieldTextBoxStyle}"
+                                     Height="92"
+                                     ToolTip="내용" />
+
+                            <TextBlock Text="할 일 목록" Foreground="#E2E8F0" Margin="0,12,0,6" />
                             <ItemsControl x:Name="ChecklistItemsControl"
                                           ItemsSource="{Binding ComposerChecklistItems}">
                                 <ItemsControl.ItemTemplate>
                                     <DataTemplate>
-                                        <Grid Margin="0,0,0,8">
+                                        <Grid Margin="0,0,0,8" HorizontalAlignment="Stretch">
                                             <Grid.ColumnDefinitions>
                                                 <ColumnDefinition Width="Auto" />
                                                 <ColumnDefinition Width="*" />
@@ -219,6 +168,7 @@
                                                      Text="{Binding Text, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
                                                      Style="{StaticResource FieldTextBoxStyle}"
                                                      Height="38"
+                                                     HorizontalAlignment="Stretch"
                                                      PreviewKeyDown="ChecklistTextBox_PreviewKeyDown"
                                                      ToolTip="체크리스트 항목" />
 
@@ -244,19 +194,31 @@
                                        FontSize="11"
                                        Margin="0,6,0,0" />
 
-                            <TextBlock Text="날짜" Foreground="#E2E8F0" Margin="0,12,0,6" />
-                            <DatePicker x:Name="DueDatePicker"
-                                        Height="40"
-                                        Background="#14FFFFFF"
-                                        BorderBrush="#38FFFFFF"
-                                        BorderThickness="1"
-                                        Foreground="White" />
+                            <Grid Margin="0,12,0,0">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*" />
+                                    <ColumnDefinition Width="12" />
+                                    <ColumnDefinition Width="*" />
+                                </Grid.ColumnDefinitions>
 
-                            <TextBlock Text="시간" Foreground="#E2E8F0" Margin="0,12,0,6" />
-                            <TextBox x:Name="DueTimeBox"
-                                     Style="{StaticResource FieldTextBoxStyle}"
-                                     Text="09:00"
-                                     ToolTip="시간(HH:mm)" />
+                                <StackPanel Grid.Column="0">
+                                    <TextBlock Text="날짜" Foreground="#E2E8F0" Margin="0,0,0,6" />
+                                    <DatePicker x:Name="DueDatePicker"
+                                                Height="40"
+                                                Background="#14FFFFFF"
+                                                BorderBrush="#38FFFFFF"
+                                                BorderThickness="1"
+                                                Foreground="White" />
+                                </StackPanel>
+
+                                <StackPanel Grid.Column="2">
+                                    <TextBlock Text="시간" Foreground="#E2E8F0" Margin="0,0,0,6" />
+                                    <TextBox x:Name="DueTimeBox"
+                                             Style="{StaticResource FieldTextBoxStyle}"
+                                             Text="09:00"
+                                             ToolTip="시간(HH:mm)" />
+                                </StackPanel>
+                            </Grid>
                         </StackPanel>
 
                         <Button x:Name="ComposerActionButton"
@@ -271,19 +233,22 @@
                          ItemsSource="{Binding Items}"
                          BorderThickness="0"
                          Background="Transparent"
-                         Foreground="White">
+                         Foreground="White"
+                         HorizontalContentAlignment="Stretch"
+                         ScrollViewer.HorizontalScrollBarVisibility="Disabled">
                     <ListBox.ItemTemplate>
                         <DataTemplate>
                             <Border Margin="0,0,0,10"
-                                    Padding="14"
+                                    Padding="16"
                                     CornerRadius="18"
+                                    HorizontalAlignment="Stretch"
                                     Background="#12FFFFFF"
                                     BorderBrush="#44FFFFFF"
                                     BorderThickness="1">
                                 <Border.Effect>
                                     <DropShadowEffect BlurRadius="20" ShadowDepth="0" Opacity="0.08" Color="#93C5FD" />
                                 </Border.Effect>
-                                <Grid>
+                                <Grid HorizontalAlignment="Stretch">
                                     <Grid.ColumnDefinitions>
                                         <ColumnDefinition Width="Auto" />
                                         <ColumnDefinition Width="*" />
@@ -291,7 +256,7 @@
                                     </Grid.ColumnDefinitions>
 
                                     <CheckBox IsChecked="{Binding IsDone}" VerticalAlignment="Top" Margin="0,4,0,0" />
-                                    <StackPanel Grid.Column="1" Margin="12,0,12,0">
+                                    <StackPanel Grid.Column="1" Margin="12,0,12,0" HorizontalAlignment="Stretch">
                                         <TextBlock Text="{Binding Title}"
                                                    FontSize="15"
                                                    FontWeight="SemiBold"
@@ -325,7 +290,7 @@
                                     <Button Grid.Column="2"
                                             Content="삭제"
                                             Style="{StaticResource GhostButtonStyle}"
-                                            Width="60"
+                                            Width="72"
                                             Height="32"
                                             Padding="0"
                                             Click="DeleteButton_Click"
