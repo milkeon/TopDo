@@ -1,13 +1,13 @@
 using System.Windows;
-using System.Windows.Forms;
+using Forms = System.Windows.Forms;
 using TopDo.Services;
 
 namespace TopDo;
 
-public partial class App : Application
+public partial class App : System.Windows.Application
 {
     private MainWindow? _mainWindow;
-    private NotifyIcon? _trayIcon;
+    private Forms.NotifyIcon? _trayIcon;
 
     protected override void OnStartup(StartupEventArgs e)
     {
@@ -23,7 +23,7 @@ public partial class App : Application
         _mainWindow.Show();
         _mainWindow.Hide();
 
-        _trayIcon = new NotifyIcon
+        _trayIcon = new Forms.NotifyIcon
         {
             Text = "Top Do",
             Visible = true,
@@ -33,9 +33,9 @@ public partial class App : Application
         _trayIcon.DoubleClick += (_, _) => ShowMainWindow();
     }
 
-    private ContextMenuStrip BuildTrayMenu()
+    private Forms.ContextMenuStrip BuildTrayMenu()
     {
-        var menu = new ContextMenuStrip();
+        var menu = new Forms.ContextMenuStrip();
         menu.Items.Add("열기", null, (_, _) => ShowMainWindow());
         menu.Items.Add("종료", null, (_, _) => ExitApplication());
         return menu;

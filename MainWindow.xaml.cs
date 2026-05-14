@@ -229,7 +229,7 @@ public partial class MainWindow : Window
         FocusChecklistItem(Math.Max(0, Math.Min(index, _composerChecklistItems.Count - 1)));
     }
 
-    private void ChecklistTextBox_PreviewKeyDown(object sender, KeyEventArgs e)
+    private void ChecklistTextBox_PreviewKeyDown(object sender, System.Windows.Input.KeyEventArgs e)
     {
         if (sender is not TextBox textBox || textBox.DataContext is not ChecklistDraftItem item)
         {
