@@ -26,6 +26,10 @@ public partial class App : System.Windows.Application
         _mainWindow.RegisterGlobalHotkey(HotkeyModifiers.Control | HotkeyModifiers.Alt, HotkeyKeys.Q, 0x1203);
 
         _mainWindow.Show();
+        _mainWindow.Activate();
+        _mainWindow.Topmost = true;
+        _mainWindow.Topmost = false;
+        _mainWindow.Focus();
 
         _trayIcon = new Forms.NotifyIcon
         {

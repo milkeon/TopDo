@@ -39,6 +39,7 @@ public partial class MainWindow : Window
     {
         InitializeComponent();
         DataContext = this;
+        SetComposerDefaults();
         Loaded += Window_Loaded;
         LocationChanged += Window_StateChanged;
         SizeChanged += Window_StateChanged;

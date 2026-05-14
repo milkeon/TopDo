@@ -137,7 +137,8 @@
                     <Border.Effect>
                         <DropShadowEffect BlurRadius="28" ShadowDepth="0" Opacity="0.12" Color="#67E8F9" />
                     </Border.Effect>
-                    <StackPanel>
+                    <StackPanel KeyboardNavigation.TabNavigation="Cycle"
+                                KeyboardNavigation.DirectionalNavigation="Contained">
                         <TextBlock Text="할 일" Foreground="#E2E8F0" Margin="0,0,0,6" />
                         <TextBox x:Name="TitleBox"
                                  Style="{StaticResource FieldTextBoxStyle}"
@@ -258,7 +259,10 @@
                                         <ColumnDefinition Width="Auto" />
                                     </Grid.ColumnDefinitions>
 
-                                    <CheckBox IsChecked="{Binding IsDone}" VerticalAlignment="Top" Margin="0,4,0,0" />
+                                    <CheckBox IsChecked="{Binding IsDone}"
+                                              VerticalAlignment="Top"
+                                              Margin="0,4,0,0"
+                                              IsTabStop="False" />
                                     <StackPanel Grid.Column="1" Margin="12,0,12,0" HorizontalAlignment="Stretch">
                                         <TextBlock Text="{Binding Title}"
                                                    FontSize="15"
@@ -266,24 +270,17 @@
                                                    Foreground="White"
                                                    TextWrapping="Wrap" />
                                         <ItemsControl Margin="0,6,0,0"
-                                                      ItemsSource="{Binding Checklist}">
-                                            <ItemsControl.Style>
-                                                <Style TargetType="ItemsControl">
-                                                    <Setter Property="Visibility" Value="Collapsed" />
-                                                    <Style.Triggers>
-                                                        <DataTrigger Binding="{Binding RelativeSource={RelativeSource AncestorType=ListBoxItem}, Path=IsMouseOver}" Value="True">
-                                                            <Setter Property="Visibility" Value="Visible" />
-                                                        </DataTrigger>
-                                                    </Style.Triggers>
-                                                </Style>
-                                            </ItemsControl.Style>
+                                                      ItemsSource="{Binding Checklist}"
+                                                      Focusable="False"
+                                                      IsTabStop="False">
                                             <ItemsControl.ItemTemplate>
                                                 <DataTemplate>
                                                     <StackPanel Orientation="Horizontal" Margin="0,0,0,6">
                                                         <CheckBox IsChecked="{Binding IsChecked, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
                                                                   VerticalAlignment="Center"
                                                                   Margin="0,0,8,0"
-                                                                  IsTabStop="False" />
+                                                                  IsTabStop="False"
+                                                                  Focusable="False" />
                                                         <TextBlock Text="{Binding Text}"
                                                                    FontSize="11"
                                                                    Foreground="#E2E8F0"
