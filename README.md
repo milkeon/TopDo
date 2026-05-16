@@ -15,20 +15,19 @@
 ## 실행
 ### 요구 사항
 - Windows
-- .NET SDK
 - WPF 실행 환경
 
 ### 열기
-1. `TopDo.sln` 또는 `TopDo.csproj`를 Visual Studio / Rider / `dotnet` 환경에서 엽니다.
-2. 빌드 후 실행합니다.
+1. 릴리즈의 `TopDo.exe`를 내려받아 실행합니다.
+2. 설치형이 아니라 *자체 포함 실행 파일*이라 .NET SDK를 따로 깔지 않아도 됩니다.
+3. ZIP을 받았다면 압축을 풀고 `TopDo.exe`를 실행합니다.
 
 ## 기본 단축키
 - `Ctrl+Alt+Space` : 창 표시 / 숨기기
 
 ## 다운로드
-- 저장소 ZIP 다운로드
-- 또는 `git clone`으로 소스 다운로드
+- 최신 릴리즈: `v0.1.12`
+- 파일: `TopDo.exe`, `TopDo-v0.1.12-standalone.zip`
 
 ## 참고
-- 현재 작업 검증은 macOS에서 HTML 미리보기와 스크린샷 기준으로 진행했습니다.
-- 이 macOS 환경에는 `dotnet` CLI가 없어 실제 WPF 빌드는 아직 못 했습니다.
+- 현재 릴리즈는 self-contained로 다시 올려서, 런타임 미설치로 인한 실행 문제를 줄였습니다.
